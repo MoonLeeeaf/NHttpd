@@ -7,8 +7,11 @@ It's a simple HTTP server, and it can execute JavaScript code when access the no
 For example:
 
 ```html
+<!-- ./page/demo.html -->
 <js>return `Hello, world! Path: ${req.path}`</js>
 ```
+
+It prints "Hello, world! Path: /demo.html"
 
 ### Usage
 
