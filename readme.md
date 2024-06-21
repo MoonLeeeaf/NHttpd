@@ -29,6 +29,12 @@ It prints "Hello, world! Path: /demo.html"
 > You need to restart NHttpd if some code's dependence has been changed. 
 > For example, a.html required a file named b.js (through "require('./b.js')" in <js> block) , even you edit b.js,  a.html will still output the same result until you restart the server. 
 
+### Credits
+
+[express](https://github.com/expressjs/express)
+
+[isBinaryFile](https://github.com/gjtorikian/isBinaryFile)
+
 ### License
 
 ```
