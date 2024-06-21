@@ -28,6 +28,7 @@ function replaceExec(txt, req, res) {
         try {
             return (new Function("req", "res", "require", group))(req, res, require)
         } catch (e) {
+            log(`${color.red}Script error: ${e + color.none}`)
             return e
         }
     })
