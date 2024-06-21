@@ -8,20 +8,25 @@ const express = require('express')
 const fs = require('fs')
 const fsp = fs.promises
 const mime = require('mime')
-
 const app = express()
 const http = require('http')
 const https = require('https')
+
+const color = require('./color')
 
 const isBinaryFile = require("isbinaryfile").isBinaryFileSync
 
 let httpServer
 
+function log(t) {
+    console.log("[" + new Date().toLocaleTimeString('en-US', { hour12: false }) + "] " + t)
+}
+
 function replaceExec(txt, req, res) {
     return txt.replace(/<js>([\s\S]*?)<\/js>/g, (_match, group) => {
         try {
             return (new Function("req", "res", group))(req, res)
-        } catch(e) {
+        } catch (e) {
             return e
         }
     })
@@ -34,14 +39,16 @@ function replaceExec(txt, req, res) {
  * @param { String } filePath 
  */
 async function sendFile(req, res, filePath) {
+
     let content = fs.readFileSync(filePath)
     let rangeHead = req.get("Range")
     let fileLength = fs.lstatSync(filePath).size
     let file
 
-    if (!isBinaryFile(content, fileLength))
+    if (!isBinaryFile(content, fileLength)) {
         content = replaceExec(content.toString(), req, res)
-    else if (rangeHead != null) {
+        log(`File type -> binary file`)
+    }else if (rangeHead != null) {
         // https://github.com/MoonLeeeaf/Android-Httpd/commit/35dafa37ce8bce8cf5940c1520c856f4e75f0633
         let rangeStart = 0
         let rangeEnd = fileLength - 1
@@ -61,33 +68,37 @@ async function sendFile(req, res, filePath) {
         res.setHeader('Content-Length', contentLength)
         res.setHeader('Content-Range', `bytes ${rangeStart}-${rangeEnd}/${fileLength}`)
         res.setHeader('Accept-Ranges', 'bytes')
+
+        log(`Send with Content-Range`)
     }
-    
+
     res.setHeader('Content-Type', mime.lookup(filePath))
-      
+
     res.status(200).send(content)
 
     if (file)
         await file.close()
+    
+    log(`Send file successfully: ${filePath}`)
 }
 
 app.get('/', async (req, res) => {
+    let filePath = 'page/index.html'
     try {
-        let filePath = './page/index.html'
-
         await sendFile(req, res, filePath)
-    } catch(e) {
-        res.status(500).send('NHttpd Error: ' + e)
+    } catch (e) {
+        res.status(500).send(`NHttpd Error: ${e}`)
+        log(`${color.yellow}Error: ${e}, file=${filePath + color.none}`)
     }
 })
 
-app.get('/:path*', async (req, res) => {
+app.get('/*', async (req, res) => {
+    let filePath = 'page' + decodeURI(req.path || '/index.html')
     try {
-        let filePath = './page/' + (req.params.path || '/index.html')
-
         await sendFile(req, res, filePath)
-    } catch(e) {
-        res.status(500).send('NHttpd Error: ' + e)
+    } catch (e) {
+        res.status(500).send(`NHttpd Error: ${e}`)
+        log(`${color.yellow}Error: ${e}, file=${filePath + color.none}`)
     }
 })
 
@@ -103,4 +114,7 @@ else
 // 默认80, 需要的话可以改或者提供第二个arg
 
 let port = parseInt(process.argv[2])
-httpServer.listen(isNaN(port) ? 80 : port)
+port = isNaN(port) ? 80 : port
+httpServer.listen(port)
+
+console.log(`${color.green}Server started with port ${port + color.none}`)
