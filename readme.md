@@ -8,7 +8,7 @@ For example:
 
 ```html
 <!-- ./page/demo.html -->
-<js>return `Hello, world! Path: ${req.path}`</js>
+<script nhttpd>return `Hello, world! Path: ${req.path}`</script>
 ```
 
 It prints "Hello, world! Path: /demo.html"
@@ -27,7 +27,7 @@ It prints "Hello, world! Path: /demo.html"
 
 > [!WARNING]
 > You need to restart NHttpd if some code's dependence has been changed. 
-> For example, a.html required a file named b.js (through "require('./b.js')" in <js> block) , even you edit b.js,  a.html will still output the same result until you restart the server. 
+> For example, a.html required a file named b.js (through "require('./b.js')" in <script nhttpd>) , even you edit b.js,  a.html will still output the same result until you restart the server. 
 
 ### Credits
 
