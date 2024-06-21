@@ -8,6 +8,7 @@ const express = require('express')
 const fs = require('fs')
 const fsp = fs.promises
 const mime = require('mime')
+
 const app = express()
 const http = require('http')
 const https = require('https')
@@ -25,7 +26,7 @@ function log(t) {
 function replaceExec(txt, req, res) {
     return txt.replace(/<js>([\s\S]*?)<\/js>/g, (_match, group) => {
         try {
-            return (new Function("req", "res", group))(req, res)
+            return (new Function("req", "res", "require", group))(req, res, require)
         } catch (e) {
             return e
         }
