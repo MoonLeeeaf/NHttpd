@@ -24,9 +24,9 @@ function log(t) {
 }
 
 function replaceExec(txt, req, res) {
-    return txt.replace(/<js>([\s\S]*?)<\/js>/g, (_match, group) => {
+    return txt.replace(/<script nhttpd>([\s\S]*?)<\/script>/g, (_match, group) => {
         try {
-            return (new Function("req", "res", "require", group))(req, res, require)
+            return (new Function("req", "res", "require", "log", "console", group))(req, res, require, log, console)
         } catch (e) {
             log(`${color.red}Script error: ${e + color.none}`)
             return e
