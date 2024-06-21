@@ -25,6 +25,9 @@ It prints "Hello, world! Path: /demo.html"
 
 5. enjoy it :D
 
+> [!WARNING]
+> You need to restart NHttpd if some code's dependence has been changed. 
+> For example, a.html required a file named b.js (through "require('./b.js')" in <js> block) , even you edit b.js,  a.html will still output the same result until you restart the server. 
 
 ### License
 
