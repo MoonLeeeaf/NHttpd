@@ -1,5 +1,7 @@
 ## NHttpd
 
+Tip: THIS PROJECT IS ON G‍I‍T‍H‍U‍‍B ONLY,**EVERYONE MUSTN'T COPY ANYTHING ANd UPLOAD TO ANYWHERE WITHOUT MY PERMISSION.**
+
 ### What's it?
 
 It's a simple HTTP server, and it can execute JavaScript code when access the non-binary file and give the result back to the response.
